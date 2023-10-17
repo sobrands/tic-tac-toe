@@ -1,0 +1,33 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+header {
+  align-self: center;
+  justify-self: center;
+  padding: 30px;
+}
+
+.arena {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: 20px;
+}
+
+.game-board {
+  width: 50%;
+  height: 30%;
+
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 10px;
+}
