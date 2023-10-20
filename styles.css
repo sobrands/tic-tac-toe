@@ -26,7 +26,7 @@ header {
 }
 
 .game-board {
-  width: 50%;
+  width: 400px;
 
   justify-self: center;
   display: grid;
@@ -39,4 +39,10 @@ header {
   justify-self: center;
   height: 20%;
   width: 200px;
+}
+
+.results {
+  justify-self: center;
+  font-size: 2rem;
+  font-weight: bold;
 }
