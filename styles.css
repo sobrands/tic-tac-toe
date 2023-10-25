@@ -35,10 +35,15 @@ header {
   gap: 10px;
 }
 
-.start-game {
+.control-buttons {
   justify-self: center;
-  height: 20%;
-  width: 200px;
+  display: flex;
+  gap: 20px;
+}
+
+.control-buttons button {
+  height: 30%;
+  width: 150px;
 }
 
 .results {

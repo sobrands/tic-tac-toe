@@ -11,11 +11,16 @@ function createPlayer(playerName, playerSymbol, playerTurns) {
     turns++;
   }
 
+  function reset() {
+    turns = 0;
+  }
+
   return {
     name, 
     symbol,
     getTurns,
     played,
+    reset,
   };
 }
 
@@ -30,25 +35,31 @@ const gameBoard = (function() {
     board[row][col] = symbol;
   }
 
+  function resetBoard() {
+    board = [...Array(3)].map(e => Array(3));
+  }
+
   return {
     getBoard,
     editBoard,
+    resetBoard,
   }
 })();
 
 const displayController = (function () {
   
   const startGameBtn = document.querySelector(".start-game");
+  const controlBtns = document.querySelector(".control-buttons");
   const playerTurn = document.querySelector(".player-turn");
   const gameArena = document.querySelector(".game-board");
   const results = document.querySelector(".results");
   
   let gameOn = false;
   let currentPlayer;
-  let turns = 0;
 
   function displayBoard() {
     const ttcBoard = document.querySelector(".game-board");
+    ttcBoard.textContent = "";
     const currentBoard = gameBoard.getBoard();
     for (let i=0; i < 3; i++) {
       for (let j=0; j < 3; j++) {
@@ -69,6 +80,14 @@ const displayController = (function () {
     playerTurn.textContent = `${currentPlayer.name}'s Turn Now`;
   }
 
+  function createResetButton() {
+    const resetGameBtn = document.createElement("button");
+    resetGameBtn.classList.add("reset-game");
+    resetGameBtn.textContent = "PLAY AGAIN?";
+    controlBtns.appendChild(resetGameBtn);
+    resetGameBtn.addEventListener('click', resetGame);
+  }
+
   function registerInput(grid) {
     if (!gameOn) { return; }
     if (grid.hasAttribute("data-pressed")) { return; }
@@ -82,28 +101,40 @@ const displayController = (function () {
     if (winner !== undefined) {
       if (winner === "tie") results.innerHTML = "Game tied!";
       else results.innerHTML = `Winner is ${currentPlayer.name}!`;
-      startGameBtn.setAttribute("disabled", "");
     }
     else displayPlayerTurn();
   }
 
   function beginGame() {
     gameOn = true;
+    controlBtns.removeChild(startGameBtn);
+    gameController.rollStartPlayer();
     displayPlayerTurn();
     gameArena.addEventListener('click', (e) => {
       if (e.target.matches('button')) {
         registerInput(e.target);
       }
-    })
+    });
   }
 
   function endGame() {
     gameOn = false;
+    createResetButton();
   }
 
   function initGame() {
     displayBoard();
     startGameBtn.addEventListener('click', beginGame);
+  }
+
+  function resetGame() {
+    gameController.resetGame();
+    displayBoard();
+    const resetBtn = controlBtns.querySelector(".reset-game");
+    controlBtns.removeChild(resetBtn);
+    controlBtns.appendChild(startGameBtn);
+    playerTurn.textContent = "";
+    results.innerHTML = "";
   }
 
   return {
@@ -115,12 +146,21 @@ const displayController = (function () {
 const gameController = (function () {
   const player1 = createPlayer("Player1", "X", 0);
   const player2 = createPlayer("Player2", "O", 0);
-  let activePlayer = player1;
+  let activePlayer;
   let result;
   let winner;
 
   function initGame() {
     displayController.initGame();
+  }
+
+  function resetGame() {
+    gameBoard.resetBoard();
+    result = undefined;
+    winner = undefined;
+    player1.reset();
+    player2.reset();
+    activePlayer = player1;
   }
 
   function getCurrentPlayer() {
@@ -129,6 +169,15 @@ const gameController = (function () {
 
   function changePlayer() {
     activePlayer = (activePlayer === player1) ? player2 : player1;
+  }
+
+  function randomizePlayer(players) {
+    const idx = Math.floor(Math.random() * 2);
+    return players[idx];
+  }
+
+  function rollStartPlayer() {
+    activePlayer = randomizePlayer([player1, player2]);
   }
 
   function checkWinner() {
@@ -179,8 +228,10 @@ const gameController = (function () {
   return {
     initGame,
     getCurrentPlayer,
+    rollStartPlayer,
     input,
     getWinner,
+    resetGame,
   };
 })();
 
