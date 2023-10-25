@@ -25,6 +25,19 @@ header {
   justify-self: center;
 }
 
+.player-info {
+  padding: 5px 0;
+}
+
+.player-info input {
+  padding: 0.1em;
+}
+
+.player-info span {
+  color: red;
+  font-weight: bold;
+}
+
 .game-board {
   width: 400px;
 

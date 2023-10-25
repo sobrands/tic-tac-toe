@@ -51,10 +51,13 @@ const displayController = (function () {
   const startGameBtn = document.querySelector(".start-game");
   const controlBtns = document.querySelector(".control-buttons");
   const playerTurn = document.querySelector(".player-turn");
+  const player1Info = document.querySelector(".player-info #player1");
+  const player2Info = document.querySelector(".player-info #player2");
   const gameArena = document.querySelector(".game-board");
   const results = document.querySelector(".results");
   
   let gameOn = false;
+  let playersCreated = false;
   let currentPlayer;
 
   function displayBoard() {
@@ -105,8 +108,36 @@ const displayController = (function () {
     else displayPlayerTurn();
   }
 
+  function validatePlayerNames(p1Info, p2Info) {
+    if (p1Info.value.length === 0) {
+      const errorMsg = document.querySelector(".player-info span#player1");
+      errorMsg.textContent = "Name required!";
+      return false;
+    }
+    else {
+      const errorMsg = document.querySelector(".player-info span#player1");
+      errorMsg.textContent = "";
+    }
+    if (p2Info.value.length === 0) {
+      const errorMsg = document.querySelector(".player-info span#player2");
+      errorMsg.textContent = "Name required!";
+      return false;
+    }
+    else {
+      const errorMsg = document.querySelector(".player-info span#player2");
+      errorMsg.textContent = "";
+    }
+    return true;
+  }
+
   function beginGame() {
+    if (!playersCreated) {
+      if ( !validatePlayerNames(player1Info, player2Info)) return;
+      gameController.makePlayer(player1Info, player2Info);
+    }
+    playersCreated = true;
     gameOn = true;
+    displayBoard();
     controlBtns.removeChild(startGameBtn);
     gameController.rollStartPlayer();
     displayPlayerTurn();
@@ -123,8 +154,16 @@ const displayController = (function () {
   }
 
   function initGame() {
-    displayBoard();
     startGameBtn.addEventListener('click', beginGame);
+    player1Info.addEventListener('focus', () => {
+      const errorMsg = document.querySelector(".player-info span#player1");
+      errorMsg.textContent = "";
+    });
+  
+    player2Info.addEventListener('focus', () => {
+      const errorMsg = document.querySelector(".player-info span#player2");
+      errorMsg.textContent = "";
+    });
   }
 
   function resetGame() {
@@ -144,8 +183,8 @@ const displayController = (function () {
 })();
 
 const gameController = (function () {
-  const player1 = createPlayer("Player1", "X", 0);
-  const player2 = createPlayer("Player2", "O", 0);
+  let player1;
+  let player2;
   let activePlayer;
   let result;
   let winner;
@@ -161,6 +200,11 @@ const gameController = (function () {
     player1.reset();
     player2.reset();
     activePlayer = player1;
+  }
+
+  function makePlayer(player1Info, player2Info) {
+    player1 = createPlayer(player1Info.value, "X", 0);
+    player2 = createPlayer(player2Info.value, "O", 0);
   }
 
   function getCurrentPlayer() {
@@ -227,6 +271,7 @@ const gameController = (function () {
 
   return {
     initGame,
+    makePlayer,
     getCurrentPlayer,
     rollStartPlayer,
     input,

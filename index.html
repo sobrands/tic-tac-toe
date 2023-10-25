@@ -12,7 +12,18 @@
 
   <header class="title">TIC-TAC-TOE</header>
   <div class="arena">
-    <div class="player-turn"></div>
+    <div class="player-turn">
+      <div class="player-info">
+        <label for="player1">Name of Player 1 (X):</label>
+        <input type="text" id="player1"/>
+        <span class="error" id="player1" aria-live="polite"></span>
+      </div>
+      <div class="player-info">
+        <label for="player2">Name of Player 2 (O):</label>
+        <input type="text" id="player2"/>
+        <span class="error" id="player2" aria-live="polite"></span>
+      </div>
+    </div>
     <div class="game-board"></div>
     <div class="control-buttons">
       <button class="start-game">START</button>
